@@ -23,7 +23,11 @@ for raw_filepath in Path("data_raw").iterdir():
                             continue
                         elif (node2 > NODE_THRESHOLD):
                             break
-                    out_file.write(raw_line);
+                    if raw_filepath.name == "rec-amz-Books.edges":
+                        node1, node2, weights, timestamp = raw_line.split(",")
+                        out_file.write(node1 + " " + node2 + "\n")
+                    else:
+                        out_file.write(raw_line)
                 elif not raw_line.startswith("%") and not raw_line.startswith("#"):
                     start_copy = True
                     if raw_filepath.suffix == ".mtx":
