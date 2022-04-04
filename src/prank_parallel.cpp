@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <list>
+#include <vector>
 #include <unordered_map>
 #include <omp.h>
 #include <time.h>
@@ -8,14 +9,15 @@
 using namespace std;
 
 struct Page {
-    list <int> in_ids; //ids of pages that point to this page
+    //SP: should we keep this as vector or as a list ? is there be a specific order of Ids that can better the run time ?
+    vector <int> in_ids; //ids of pages that point to this page
     int indegree;
     int outdegree;
     double score; //page-rank score
     double score_new; //used as temp variable to update the score
     Page(){
         indegree = 0;
-        indegree = 0;
+        outdegree = 0;
         score = 0.0;
     }
 };
@@ -37,26 +39,36 @@ int main(int argc, char** argv){
 
 
 
-    omp_set_num_threads(num_threads);
-
     //PHASE 1 : Read graph from input file
-    //SP: Should we do parallel file read as well ?
-    clock_t tStart = clock();
-    int num_pages = 0;
-
-    //SP: we can think of some other way to store this information
-    unordered_map <int, Page> pages; //mapping page ID to its struct
-    unordered_map <int, int> lookup; //program assigned id mapped to original ID of the page coming from file
-
     cout<<"Loading graph data..."<<endl;
 
-    //TODO: Code for reading the data from file comes here
-    //We can have different functions for processing input based on the structure of graph we are processing
+    clock_t tStart = clock();
+    int num_pages = 0;
+    unordered_map <int, Page> pages; //mapping page ID to its struct
+
+    ifstream cin(input_file);
+
+    int id, out;
+    while(cin>>id) {
+        cin >> out;
+        if(!pages.count(id)) {
+            pages[id] = Page();
+            num_pages++;
+        }
+        if(!pages.count(out)) {
+            pages[out] = Page();
+            num_pages++;
+        }
+        pages[out].indegree++;
+        pages[out].in_ids.push_back(id);
+        pages[id].outdegree++;
+    }
+
 
     cout<< "Graph data loaded in "<<(double)(clock() - tStart)/CLOCKS_PER_SEC<<"s"<<endl;
     cout<<"Loaded "<<num_pages<<" pages"<<endl;
 
-
+    /*
     // initialize pageRank
     float equal_prob = 1.0 / num_pages;
     for(auto& x : pages)
@@ -64,6 +76,7 @@ int main(int argc, char** argv){
 
     float broadcastScore;
 
+     omp_set_num_threads(num_threads);
     //PHASE 2 : Page ID Distribution
     //TODO: ID distribution logic for different threads comes here.
 
@@ -81,7 +94,7 @@ int main(int argc, char** argv){
         for(int i=0;i<pages.size();i++){
 
             // find the ID corresponding to the i-page
-            int idx = lookup[i];
+            int idx = i;
 
             // used to store the new score
             pages[idx].score_new = 0.0;
@@ -122,4 +135,6 @@ int main(int argc, char** argv){
     }
     cout<<"Results written in "<<(double)(clock() - rStart)/CLOCKS_PER_SEC<<"s"<<endl;
     result_file.close();
+     */
+    return 0;
 }
