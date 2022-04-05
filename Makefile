@@ -3,7 +3,7 @@ all: builddir pagerank eval
 builddir:
 	mkdir -p build
 
-CPP_STD=--std=c++17
+CPP_STD=--std=c++20
 
 
 ifeq ($(shell uname -s),Darwin)
