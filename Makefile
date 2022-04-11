@@ -1,4 +1,4 @@
-all: regular_mode_cookie builddir pagerank eval
+all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial eval
 
 regular_mode_cookie:
 	ls
@@ -45,14 +45,15 @@ CLANG_EXEC=clang++ ${CPP_STD} ${OS_SPECFIC_FLAGS} ${OS_SPECIFIC_LIBS} -lomp
 build/%.o: src/%.cpp
 	clang++ ${CPP_STD} ${OS_SPECFIC_FLAGS} -c $< -o $@ ${FLAGS} ${OS_SPECIFIC_INCLUDES} $(TEST_FLAGS)
 
-pagerank: build/prank_parallel.o
-	${CLANG_EXEC} build/prank_parallel.o -o pagerank
+prank_%: build/prank_%.o
+	${CLANG_EXEC} build/prank_parallel.o -o $@
+
 
 eval: build/measure.o
 	${CLANG_EXEC} ${<} -o $@
 
 clean: clean_cookie
-	rm -rf build 2>/dev/null
+	rm -rf build prank* eval 2>/dev/null
 
 .PHONY: clean_cookie
 clean_cookie:
