@@ -1,6 +1,6 @@
 .DS_STORE
-data*
 build
 eval
 prank*
 *cookie
+data*

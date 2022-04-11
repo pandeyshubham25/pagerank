@@ -46,7 +46,7 @@ build/%.o: src/%.cpp
 	clang++ ${CPP_STD} ${OS_SPECFIC_FLAGS} -c $< -o $@ ${FLAGS} ${OS_SPECIFIC_INCLUDES} $(TEST_FLAGS)
 
 prank_%: build/prank_%.o
-	${CLANG_EXEC} build/prank_parallel.o -o $@
+	${CLANG_EXEC} $< -o $@
 
 
 eval: build/measure.o
