@@ -1,4 +1,4 @@
-all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial eval
+all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial prank_edge_partition
 
 regular_mode_cookie:
 	ls
@@ -11,7 +11,7 @@ test_mode_cookie:
 
 #.PHONY: build_for_test
 
-build_for_test:
+build_for_test: eval
 	make TEST_FLAGS=-DTEST=1 
 
 fake_regular_cookie: clean_cookie
