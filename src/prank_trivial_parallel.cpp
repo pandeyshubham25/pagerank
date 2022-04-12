@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <omp.h>
-#include <time.h>
+#include <chrono>
 
 using namespace std;
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     //print input file name follwoed by num_itera and alpha
     cout << "Parallel parameters: " << input_file << " " << num_iters << " " << alpha << endl;
 
-    clock_t tStart = clock();
+    auto tStart = std::chrono::high_resolution_clock::now();
     int num_pages = 0;
     unordered_map <int, Page> pages; //mapping page ID to its struct
 
@@ -66,8 +66,9 @@ int main(int argc, char** argv){
         pages[id].outdegree++;
     }
 
-
-    cout << "Load time: " << (double)(clock() - tStart)/CLOCKS_PER_SEC <<endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - tStart);
+    cout << "Load time: " << elapsed.count()*1e-9 <<endl;
     //cout<<"Loaded "<<num_pages<<" pages"<<endl;
 
 
@@ -86,7 +87,7 @@ int main(int argc, char** argv){
     //PHASE 3 : iteratively update ranks
     //Once page distribution is done, we can spawn the threads
     //The code below simply distributes the pages across threads based on page id, we need to change it
-    clock_t aStart = clock();
+    tStart = std::chrono::high_resolution_clock::now();
     omp_set_num_threads(num_threads);
     for(int j=0;j<num_iters;j++){
         clock_t tStart = clock();
@@ -127,17 +128,20 @@ int main(int argc, char** argv){
     }
 
     //print time taken to converge
-    cout << "Iteration time: " << (double)(clock() - aStart)/CLOCKS_PER_SEC <<endl;
+    end = std::chrono::high_resolution_clock::now();
+    elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - tStart);
+
+    cout << "Iteration time: " << elapsed.count() *1e-9 <<endl;
 
     //PHASE 4: Write the result
 
 
     string result_path = input_file + string("_parallel_ranks") ;
-    ofstream result_file(result_path);
+    FILE *fptr = fopen(result_path.c_str(), "w");
     for(auto& x : pages){
-        result_file << x.first << " " << x.second.score << "\n";
+        fprintf(fptr, "%d %.10f\n", x.first, x.second.score);
     }
-    result_file.close();
+    fclose(fptr);
 
     return 0;
 }
