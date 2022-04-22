@@ -66,7 +66,6 @@ int main(int argc, char** argv){
     cout<<"Loading graph data..."<<endl;
 
     clock_t tStart = clock();
-    int num_pages = 0;
 
     ifstream cin(input_file);
 
@@ -80,27 +79,31 @@ int main(int argc, char** argv){
     double val;
     int i=0;
     while(cin >> rid >> cid >> val) {
-        row_indexes[i]=rid-1;
-        col_indexes[i]=cid-1;
+        row_indexes[i]=cid;
+        col_indexes[i]=rid;
         values[i]=val;
         i++;
     }
     cout<< "Graph data loaded in "<<(double)(clock() - tStart)/CLOCKS_PER_SEC<<"s"<<endl;
-    cout<<"Loaded "<<num_pages<<" pages"<<endl;
+    cout<<"Loaded "<<cols<<" pages"<<endl;
 
-    float *B = new float[cols];
-    float *C_init = new float[cols];
     float *C0 = new float[cols];
     float *C1 = new float[cols];
 
     float *t_swap;
 
     //initialize pagerank
-    float equal_prob = 1.0 / num_pages;
+    float equal_prob = 1.0 / cols;
+
+    //equation stuff
+    float alpha_prob = equal_prob*alpha;
+
+    float rand_walk = (1.0-alpha)/(1.0*cols);
+
+    //cout << alpha_prob << endl;
+
     for(i=0; i<cols;i++) {
-        B[i]=1.0;
-        C_init[i]=equal_prob;
-        C0[i]=0.0;
+        C0[i]=equal_prob;
     }
     omp_set_num_threads(num_threads);
 
@@ -109,20 +112,18 @@ int main(int argc, char** argv){
     //PHASE 3 : iteratively update ranks
     //Once page distribution is done, we can spawn the threads
     //The code below simply distributes the pages across threads based on page id, we need to change it
-    clock_t aStart = clock();
+    tStart = clock();
     for(int j=0;j<num_iters;j++){
-        //set C1 to zero in parallel
+        multiply(C0,C1);
         #pragma omp parallel for
-        for(int i=0; i<cols; i++) C1[i]=0.0;
-        multiply(B,C1);
+        for(int i=0; i<cols; i++) {
+            C1[i]=alpha*C1[i] + rand_walk;
+        }
+
         t_swap = C0;
         C0=C1;
         C1=t_swap;
-        //cout<<"Iteration "<<j<<" completed in "<<(double)(clock() - tStart)/CLOCKS_PER_SEC<<"s"<<endl;
-        for(int i=0; i<cols; i++) {
-            cout << C1[i] << " ";
-        }
-        cout << endl;
+
     }
     cout<<"Algorithm terminated in "<<(double)(clock() - tStart)/CLOCKS_PER_SEC<<"s"<<endl;
 
@@ -131,7 +132,7 @@ int main(int argc, char** argv){
     string result_path = input_file + string("_parallel_ranks") ;
     FILE *fptr = fopen(result_path.c_str(), "w");
     for(int i=0; i<cols; i++){
-        fprintf(fptr, "%d %.10f\n", i+1, C1[i]);
+        fprintf(fptr, "%d %.10f\n", i+1, C0[i]);
     }
     fclose(fptr);
     return 0;
