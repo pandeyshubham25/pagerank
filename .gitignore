@@ -1,5 +1,6 @@
-data_raw
-data
-
-
-
+.DS_STORE
+build
+eval
+prank*
+*cookie
+data*
