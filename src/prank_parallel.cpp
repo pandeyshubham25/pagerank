@@ -40,7 +40,9 @@ int main(int argc, char** argv){
 
 
     //PHASE 1 : Read graph from input file
+#ifdef DEBUG
     cout<<"Loading graph data..."<<endl;
+#endif
 
     clock_t tStart = clock();
     int num_pages = 0;
@@ -65,8 +67,11 @@ int main(int argc, char** argv){
     }
 
 
+    cout<< (double)(clock() - tStart)/CLOCKS_PER_SEC;
+#ifdef DEBUG
     cout<< "Graph data loaded in "<<(double)(clock() - tStart)/CLOCKS_PER_SEC<<"s"<<endl;
     cout<<"Loaded "<<num_pages<<" pages"<<endl;
+#endif
 
     /*
     // initialize pageRank

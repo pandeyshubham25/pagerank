@@ -2,5 +2,6 @@
 build
 eval
 prank*
+!prank*.cpp
 *cookie
 data*
