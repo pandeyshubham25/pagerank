@@ -1,4 +1,4 @@
-all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial eval
+all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial prank_parallel_csr adj_to_csr eval
 
 regular_mode_cookie:
 	ls
@@ -52,8 +52,11 @@ prank_%: build/prank_%.o
 eval: build/measure.o
 	${CLANG_EXEC} ${<} -o $@
 
+adj_to_%: build/adj_to_%.o
+	${CLANG_EXEC} ${<} -o $@
+
 clean: clean_cookie
-	rm -rf build prank* eval 2>/dev/null
+	rm -rf build prank* adj_to_* eval 2>/dev/null
 
 .PHONY: clean_cookie
 clean_cookie:
