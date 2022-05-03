@@ -132,7 +132,7 @@ int main(int argc, char** argv){
     string result_path = input_file + string("_parallel_ranks") ;
     FILE *fptr = fopen(result_path.c_str(), "w");
     for(int i=0; i<cols; i++){
-        fprintf(fptr, "%d %.10f\n", i+1, C0[i]);
+        fprintf(fptr, "%d %.10f\n", i, C0[i]);
     }
     fclose(fptr);
     return 0;

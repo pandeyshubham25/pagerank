@@ -50,11 +50,14 @@ int main(int argc, char** argv) {
 
     double sqdev=0.0;
     int true_id;
+    int max_diff = 0;
     for(int i=0; i<v.size(); i++) {
         true_id = comp[v[i].id];
         sqdev = (true_id-i)*(true_id-i);
+        max_diff = max(max_diff, abs(true_id-i));
     }
     sqdev/=v.size();
-    cout << sqrt(sqdev);
+    cout << "RMSE : " << sqrt(sqdev) << endl;
+    // cout << "Max Absolute : " << max_diff << endl;
     return 0;
 }

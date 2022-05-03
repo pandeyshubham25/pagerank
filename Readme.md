@@ -1,4 +1,5 @@
 Parallel Page Rank
 
-src - contains core logic
-data - contains files for graphs
+src - contains core logic \
+data - contains files for graphs \
+test - contains test data 
