@@ -136,7 +136,15 @@ int main(int argc, char** argv){
 
     //PHASE 4: Write the result
 
-    string result_path = string("build") + std::filesystem::path(std::string(input_file)).filename().string() + string("_parallel_ranks") ;
+    string input_file_str(input_file);
+
+    string result_path;
+    if(input_file_str[0]=='.') {
+        result_path = string("../build") + input_file_str.substr(7) + string("_parallel_ranks") ;
+    }
+    else {
+        result_path = string("build") + input_file_str.substr(4) + string("_parallel_ranks") ;
+    }
 
     FILE *fptr = fopen(result_path.c_str(), "w");
     for(auto& x : pages){

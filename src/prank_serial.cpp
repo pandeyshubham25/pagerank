@@ -132,8 +132,16 @@ int main(int argc, char** argv){
     cout << "Iteration time: " << elapsed.count() *1e-9 <<endl;
 
     //PHASE 4: Write the result
+    string input_file_str(input_file);
 
-    string result_path = string("build") + std::filesystem::path(std::string(input_file)).filename().string() + string("_serial_ranks") ;
+    string result_path;
+    if(input_file_str[0]=='.') {
+        result_path = string("../build") + input_file_str.substr(7) + string("_serial_ranks") ;
+    }
+    else {
+        result_path = string("build") + input_file_str.substr(4) + string("_serial_ranks") ;
+    }
+
     FILE *fptr = fopen(result_path.c_str(), "w");
     for(auto& x : pages){
         fprintf(fptr, "%d %.10f\n", x.first, x.second.score);

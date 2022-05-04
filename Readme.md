@@ -41,19 +41,20 @@ ___
 
 **Steps to execute**
 ___
-1) Make sure you have the dataset in desired format inside _data_ directory (we have provided one for testing). If you want to test on some other data, you can use _data_formatter.py_ to format it and place it in _data_ directory (instructions for this given in the previous section)
-2) Make sure that you are inside _src_ directory before executing any of the commands below
-3) Run prank_serial.cpp
+1) Make sure you have created a _build_ folder in the base directory (this is where some of the outputs get written).
+2) Make sure you have the dataset in desired format inside _data_ directory (we have provided one for testing). If you want to test on some other data, you can use _data_formatter.py_ to format it and place it in _data_ directory (instructions for this given in the previous section)
+3) Make sure that you are inside _src_ directory before executing any of the commands below
+4) Run prank_serial.cpp
    1) clang++ -std=c++17 -fopenmp prank_serial.cpp -o prank_serial
    2) ./prank_serial 100 0.85 ../data/cit-Patents
    3) arguments - (number of iterations, alpha value for page rank algorithm, input file name)
    4) This creates a file named _cit-Patents_serial_ranks_ in the _data_ directory with node id and their corresponding weight (in range 0 to 1) in each line.
-4) Run prank_parallel.cpp
+5) Run prank_parallel.cpp
    1) clang++ -std=c++17 -fopenmp prank_parallel.cpp -o prank_parallel
    2) ./prank_parallel 100 0.85 ../data/cit-Patents 9
    3) arguments - (number of iterations, alpha value for page rank algorithm, input file name, number of threads)
    4) This creates a file named _cit-Patents_parallel_ranks_ in the _data_ directory with node id and their corresponding weight (in range 0 to 1) in each line.
-5) Run prank_parallel_spmv.cpp
+6) Run prank_parallel_spmv.cpp
    1) Make sure that you have the file in coo format inside _data_ directory. For this, execute adj_to_coo.cpp as instructued below
       1) clang++ -std=c++17 adj_to_coo.cpp -o adjcoo
       2) ./adjcoo ../data/cit-Patents
@@ -62,7 +63,7 @@ ___
    4) ./prank_parallel_spmv 100 0.85 ../data/cit-Patents_coo 9
    5) arguments - (number of iterations, alpha value for page rank algorithm, input file name, number of threads)
    6) This creates a file named _cit-Patents_coo_parallel_ranks_ in the _data_ directory with node id and their corresponding weight (in range 0 to 1) in each line.
-6) Run prank_parallel_csr.cpp
+7) Run prank_parallel_csr.cpp
    1) Make sure that you have the file in csr format inside _data_ directory. For this, execute adj_to_coo.cpp as instructued below
        1) clang++ -std=c++17 adj_to_csr.cpp -o adjcsr
        2) ./adjcsr ../data/cit-Patents
