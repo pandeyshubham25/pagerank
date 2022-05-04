@@ -1,7 +1,7 @@
 Parallel Page Rank
 ___
 **Directories and files descriptions**
-
+___
 _src_ - contains core logic 
 1) prank_serial.cpp - serial implementation
 2) prank_parallel.cpp - parallel implementation using mpi
@@ -11,13 +11,23 @@ _src_ - contains core logic
 6) adj_to_coo.cpp - utility code to convert graph data to COO (Coordinate) format
 7) verify.cpp - utility code to evaluate correctness of computed page ranks against the baseline values
 
+___
 _data_ - contains sample files to run Page Rank on \
 NOTE: We have only provided 1 dataset here. Any other data source can be put in this directory for evaluation.
 To make sure that the processing is consistent, all the files in this directory contain only two space separated integers in every line indicating an edge between the first integer and the second.
-
+___
 _test_ - contains test data
 This directory has custom generated data for testing purposes. The data format is same as that in _data_ directory.
-
+___
+_plotting_ - contains python scripts to generate plots and generated plots
+1) iteration_times.py - to run this script, use the following format
+   1) python iteration_times.py 1
+   2) The commandline arg is integer value from 1 to 3 indicating which data to plot
+   3) 1 is for plotting data based on number of nodes, 2 is for plotting data based on number of edges and 3 is for plotting data based on average degree of nodes
+2) data_times.py - to run this script, use the following format
+   1) python data_times.py
+   2) It does not take any commandline argument, and simply plots the time take by different data formats to load based on the number of edges in the graph.
+___
 _data_formatter.py_
 It can be run on the datasets downloadable from the links provided for the dataset in the ppt. This converts the files to the standard format we are using in _data_ directory.
 Once downloaded, the file script can be run as - \
@@ -25,7 +35,8 @@ Once downloaded, the file script can be run as - \
 
 ___
 
-**Steps to execute -**
+**Steps to execute**
+___
 1) Make sure you have the dataset in desired format inside _data_ directory (we have provided one for testing). If you want to test on some other data, you can use _data_formatter.py_ to format it and place it in _data_ directory (instructions for this given in the previous section)
 2) Make sure that you are inside _src_ directory before executing any of the commands below
 3) Run prank_serial.cpp
