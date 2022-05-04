@@ -133,7 +133,8 @@ int main(int argc, char** argv){
 
     //PHASE 4: Write the result
 
-    string result_path = input_file + string("_serial_ranks") ;
+    string input_file_str(input_file);
+    string result_path = string("build") + input_file_str.substr(4) + string("_serial_ranks") ;
     FILE *fptr = fopen(result_path.c_str(), "w");
     for(auto& x : pages){
         fprintf(fptr, "%d %.10f\n", x.first, x.second.score);

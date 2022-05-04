@@ -20,7 +20,8 @@ ___
 _test_ - contains test data
 This directory has custom generated data for testing purposes. The data format is same as that in _data_ directory.
 ___
-_plotting_ - contains python scripts to generate plots and generated plots
+_plotting_ - contains python scripts to generate plots and generated plots \
+NOTE: Please make sure you are in _plotting_ directory before executing the below commands
 1) iteration_times.py - to run this script, use the following format
    1) python iteration_times.py 1
    2) The commandline arg is integer value from 1 to 3 indicating which data to plot
