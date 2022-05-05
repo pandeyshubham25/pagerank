@@ -1,4 +1,4 @@
-all: regular_mode_cookie builddir prank_parallel prank_trivial_parallel prank_serial prank_parallel_csr adj_to_csr eval adj_to_coo prank_parallel_spmv
+all: regular_mode_cookie builddir prank_parallel prank_serial prank_parallel_csr adj_to_csr eval adj_to_coo prank_parallel_spmv
 
 regular_mode_cookie:
 	ls

@@ -60,10 +60,10 @@ int main(int argc, char** argv){
 
     //PHASE 0 : Read commandline args and initialize global params
     //TODO: Add exception handling for parsing cline args
-    num_threads = atoi(argv[1]);
-    num_iters = atoi(argv[2]);
-    alpha = atof(argv[3]);
-    input_file = argv[4];
+    num_iters = atoi(argv[1]);
+    alpha = atof(argv[2]);
+    input_file = argv[3];
+    num_threads = atoi(argv[4]);
 
 
 

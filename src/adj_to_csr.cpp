@@ -66,6 +66,7 @@ int main(int argc, char** argv){
     //PHASE 0 : Read commandline args and initialize global params
     //TODO: Add exception handling for parsing cline args
     input_file = argv[1];
+    char *output_file = argv[2];
 
 
 
@@ -102,7 +103,7 @@ int main(int argc, char** argv){
 
 
     // Write these values in coordinate format to another file
-    string result_path = input_file + string("_csr") ;
+    string result_path = output_file;//input_file + string("_csr") ;
     FILE *fptr = fopen(result_path.c_str(), "w");
 
     //first line in the file describes number of row, cols and non zero values in adj matrix

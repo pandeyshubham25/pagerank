@@ -14,9 +14,18 @@
 #define NUM_ITERS 100
 #define ALPHA 0.85
 
-void run_pr_iteration(std::string pr_version, std::ofstream &gp_data, std::string filename, bool first) {
-            char pr_command[300];
-            std::snprintf(pr_command, 300, "./%s %d, %d, %f, data/%s\n", pr_version.c_str(), PROCESSORS, NUM_ITERS, ALPHA, filename.c_str());
+//void run_pr_iteration(std::string pr_version, std::ofstream &gp_data, std::string pathname, bool first) {
+void run_pr_iteration(std::string pr_version, std::filesystem::path pathname, bool first, std::string transformer) {
+            char pr_command[700];
+
+            if (!transformer.empty()) {
+                char transform_command[700];
+                std::string original_path = pathname;
+                pathname = std::string("./build/") + pathname.filename().string() + pr_version;
+                std::snprintf(transform_command, 700, "./%s %s %s", transformer.c_str(), original_path.c_str(), pathname.string().c_str());
+                system(transform_command);
+            }
+            std::snprintf(pr_command, 700, "./%s %d %f %s %d\n", pr_version.c_str(), NUM_ITERS, ALPHA, pathname.c_str(), PROCESSORS);
             std::cout << pr_command;
             FILE *pr_output = popen(pr_command, "r");
             char time_str[50];
@@ -25,21 +34,37 @@ void run_pr_iteration(std::string pr_version, std::ofstream &gp_data, std::strin
             //fgets(time_str, 50, pr_output);
             //double runtime = atof(time_str);
             if (first) {
-                gp_data << filename << ",";
+                //gp_data << pathname << ",";
             } else {
-                gp_data << ",";
+                //gp_data << ",";
             }
             //gp_data << runtime;
             pclose(pr_output);
 }
 
 int main() {
+    namespace fs = std::filesystem;
+    for (fs::directory_entry data_file : fs::directory_iterator("data")) {
+        if (data_file.path().filename().string().find("_ranks") != std::string::npos) {
+            continue;
+        }
+        run_pr_iteration("prank_serial", data_file.path(), false, "");
+        run_pr_iteration("prank_parallel", data_file.path(), false, "");
+        run_pr_iteration("prank_parallel_spmv", data_file.path(), false, "adj_to_coo");
+        run_pr_iteration("prank_parallel_csr", data_file.path(), false, "adj_to_csr");
+    }
+}
+
+
+/*
+
+int main() {
 #ifdef TEST
     std::vector<std::string> PR_VERSIONS = {"test/pr_mock_long", "test/pr_mock_short"};
     std::string pr_source_of_truth = "test/pr_mock";
 #else
-    std::vector<std::string> PR_VERSIONS = {};//{"prank_parallel", "prank_trivial_parallel"};
-    std::string pr_source_of_truth = "prank_parallel_spmv";
+    std::vector<std::string> REG_PR_VERSIONS = {"prank_serial", "prank_trivial_parallel", "prank_parallel_spmv", "prank_parallel_csr"};
+    //std::string pr_source_of_truth = "prank_serial";
 #endif
     namespace fs = std::filesystem;
     std::ofstream gp_data("gnuplot_data", std::ofstream::out );
@@ -55,9 +80,9 @@ int main() {
     }
     gp_data << "\n";
     for (fs::directory_entry data_file : fs::directory_iterator("data")) {
-        run_pr_iteration(pr_source_of_truth, gp_data, data_file.path().filename().string(), true);
+        //run_pr_iteration(pr_source_of_truth, gp_data, data_file.path().filename().string(), true);
         for (std::string pr_version : PR_VERSIONS) {
-            run_pr_iteration(pr_version, gp_data, data_file.path().filename().string(), false);
+            run_pr_iteration(pr_version, gp_data, data_file.path().string(), false);
         }
         gp_data << "\n";
     }
@@ -70,7 +95,8 @@ int main() {
     gp_instructions << plot_command;
     gp_data.close();
     gp_instructions.close();
-    pclose(popen("gnuplot gnuplot_instructions -p", "w"));
+    //pclose(popen("gnuplot gnuplot_instructions -p", "w"));
     //remove("gnuplot_data");
     //remove("gnuplot_instructions");
 }
+*/
